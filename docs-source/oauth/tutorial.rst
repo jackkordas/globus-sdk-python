@@ -1,4 +1,4 @@
-.. _tutorial:
+.. _oauth_tutorial:
 
 OAuth2 SDK Tutorial
 -------------------

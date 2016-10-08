@@ -2,7 +2,7 @@ OAuth Flows
 -----------
 
 If you want to get started doing OAuth2 flows, you should read the
-:ref:`tutorial <tutorial>`.
+:ref:`tutorial <oauth_tutorial>`.
 
 Flow Managers
 ~~~~~~~~~~~~~

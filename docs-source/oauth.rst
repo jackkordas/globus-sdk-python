@@ -34,6 +34,6 @@ perform actions for **bar@example.com** on systems authenticated via Globus.
 .. toctree::
    :maxdepth: 1
 
-   oauth/flows
    oauth/tutorial
+   oauth/flows
    oauth/resource_servers

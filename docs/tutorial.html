@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SDK Tutorial &mdash; globus-sdk-python 0.4.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="globus-sdk-python 0.4.2 documentation" href="index.html" />
+    <link rel="next" title="Service Clients" href="clients.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="clients.html" title="Service Clients"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">globus-sdk-python 0.4.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sdk-tutorial">
+<span id="tutorial"></span><h1>SDK Tutorial<a class="headerlink" href="#sdk-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This is a tutorial in the use of the Globus SDK. It takes you through a simple
+step-by-step flow for registering your application, getting tokens, and using
+them with our service.</p>
+<p>These are the steps we will take:</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#tutorial-step1"><span class="std std-ref">Get a Client</span></a></li>
+<li><a class="reference internal" href="#tutorial-step2"><span class="std std-ref">Get and Save Client ID</span></a></li>
+<li><a class="reference internal" href="#tutorial-step3"><span class="std std-ref">Get Some Access Tokens!</span></a></li>
+<li><a class="reference internal" href="#tutorial-step4"><span class="std std-ref">Use Your Tokens, Talk to the Service</span></a></li>
+</ol>
+<p>That should be enough to get you up and started.
+You can also proceed to the <a class="reference internal" href="#advanced-tutorial"><span class="std std-ref">Advanced Tutorial</span></a> steps
+to dig deeper into the SDK.</p>
+<div class="section" id="step-1-get-a-client">
+<span id="tutorial-step1"></span><h2>Step 1: Get a Client<a class="headerlink" href="#step-1-get-a-client" title="Permalink to this headline">¶</a></h2>
+<p>In order to complete an OAuth2 flow to get tokens, you must have a client or
+&#8220;app&#8221; definition registered with Globus.</p>
+<p>Navigate to the <a class="reference external" href="https://developers.globus.org">Developer Site</a> and select
+&#8220;Register an App with Globus.&#8221;
+You will be prompted to login &#8211; do so with the account you wish to use as your
+app&#8217;s administrator.</p>
+<p>When prompted, create a Project named &#8220;SDK Tutorial Project&#8221;.
+Projects let you share the administrative burden of a collection of apps, but
+we won&#8217;t be sharing the SDK Tutorial Project.</p>
+<p>In the &#8220;Manage Project&#8221; menu for &#8220;SDK Tutorial Project&#8221;, select &#8220;Add new App&#8221;.</p>
+<p>Enter the following pieces of information:</p>
+<ul class="simple">
+<li><strong>App Name</strong>: &#8220;SDK Tutorial App&#8221;</li>
+<li><strong>Scopes</strong>: &#8220;openid&#8221;, &#8220;profile&#8221;, &#8220;email&#8221;,
+&#8220;<a class="reference external" href="urn:globus:auth:scope:transfer.api.globus.org:all">urn:globus:auth:scope:transfer.api.globus.org:all</a>&#8220;</li>
+<li><strong>Redirects</strong>: <a class="reference external" href="https://auth.globus.org/v2/web/auth-code">https://auth.globus.org/v2/web/auth-code</a></li>
+<li><strong>Required Identity Provider</strong>: &lt;Leave Unchecked&gt;</li>
+<li><strong>Privacy Policy</strong>: &lt;Leave Blank&gt;</li>
+<li><strong>Terms &amp; Conditions</strong>: &lt;Leave Blank&gt;</li>
+<li><strong>Native App</strong>: Check this Box</li>
+</ul>
+<p>and click &#8220;Create App&#8221;.</p>
+</div>
+<div class="section" id="step-2-get-and-save-client-id">
+<span id="tutorial-step2"></span><h2>Step 2: Get and Save Client ID<a class="headerlink" href="#step-2-get-and-save-client-id" title="Permalink to this headline">¶</a></h2>
+<p>On the &#8220;Apps&#8221; screen you should now see all of your Projects, probably just
+&#8220;SDK Tutorial Project&#8221;, and all of the Apps they contain, probably just &#8220;SDK
+Tutorial App&#8221;.
+Expand the dropdown for the tutorial App, and you should see an array of
+attributes of your client, including the ones we specified in Step 1, and a
+bunch of new things.</p>
+<p>We want to get the Client ID from this screen.
+Feel free to think of this as your App&#8217;s &#8220;username&#8221;.
+You can hardcode it into scripts, store it in a config file, or even put it
+into a database.
+It&#8217;s non-secure information and you can treat it as such.</p>
+<p>In the rest of the tutorial we will assume in all code samples that it is
+available in the variable, <code class="docutils literal"><span class="pre">CLIENT_ID</span></code>.</p>
+</div>
+<div class="section" id="step-3-get-some-access-tokens">
+<span id="tutorial-step3"></span><h2>Step 3: Get Some Access Tokens!<a class="headerlink" href="#step-3-get-some-access-tokens" title="Permalink to this headline">¶</a></h2>
+<p>Talking to Globus Services as a user requires that you authenticate to your new
+App and get it Tokens, credentials proving that you logged into it and gave it
+permission to access the service.</p>
+<p>No need to worry about creating your own login pages and such &#8211; for this type
+of app, Globus provides all of that for you.
+Run the following code sample to get your Access Tokens:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">globus_sdk</span>
+
+<span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="s1">&#39;&lt;YOUR_ID_HERE&gt;&#39;</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">NativeAppAuthClient</span><span class="p">(</span><span class="n">CLIENT_ID</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">oauth2_start_flow_native_app</span><span class="p">()</span>
+
+<span class="n">authorize_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">oauth2_get_authorize_url</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Please go to this URL and login: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">authorize_url</span><span class="p">))</span>
+
+<span class="c1"># this is to work on Python2 and Python3 -- you can just use raw_input() or</span>
+<span class="c1"># input() for your specific version</span>
+<span class="n">get_input</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">__builtins__</span><span class="p">,</span> <span class="s1">&#39;raw_input&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+<span class="n">auth_code</span> <span class="o">=</span> <span class="n">get_input</span><span class="p">(</span>
+    <span class="s1">&#39;Please enter the code you get after login here: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">token_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">oauth2_exchange_code_for_tokens</span><span class="p">(</span><span class="n">auth_code</span><span class="p">)</span>
+
+<span class="n">globus_auth_data</span> <span class="o">=</span> <span class="n">token_response</span><span class="o">.</span><span class="n">by_resource_server</span><span class="p">[</span><span class="s1">&#39;auth.globus.org&#39;</span><span class="p">]</span>
+<span class="n">globus_transfer_data</span> <span class="o">=</span> <span class="n">token_response</span><span class="o">.</span><span class="n">by_resource_server</span><span class="p">[</span><span class="s1">&#39;transfer.api.globus.org&#39;</span><span class="p">]</span>
+
+<span class="c1"># most specifically, you want these tokens as strings</span>
+<span class="n">AUTH_TOKEN</span> <span class="o">=</span> <span class="n">globus_auth_data</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span>
+<span class="n">TRANSFER_TOKEN</span> <span class="o">=</span> <span class="n">globus_transfer_data</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Managing credentials is one of the more advanced features of the SDK.
+If you want to read in depth about these steps, please see our explicit
+<a class="reference internal" href="oauth/tutorial.html#oauth-tutorial"><span class="std std-ref">OAuth2 Tutorial</span></a>.</p>
+</div>
+<div class="section" id="step-4-use-your-tokens-talk-to-the-service">
+<span id="tutorial-step4"></span><h2>Step 4: Use Your Tokens, Talk to the Service<a class="headerlink" href="#step-4-use-your-tokens-talk-to-the-service" title="Permalink to this headline">¶</a></h2>
+<p>Continuing from the example above, you have two credentials to Globus Services
+on hand: the <code class="docutils literal"><span class="pre">AUTH_TOKEN</span></code> and the <code class="docutils literal"><span class="pre">TRANSFER_TOKEN</span></code>.
+We&#8217;ll focus on the <code class="docutils literal"><span class="pre">TRANSFER_TOKEN</span></code> for now. It&#8217;s how you authorize access to
+the Globus Transfer service.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># a GlobusAuthorizer is an auxiliary object we use to wrap the token. In</span>
+<span class="c1"># more advanced scenarios, other types of GlobusAuthorizers give us</span>
+<span class="c1"># expressive power</span>
+<span class="n">authorizer</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">AccessTokenAuthorizer</span><span class="p">(</span><span class="n">TRANSFER_TOKEN</span><span class="p">)</span>
+<span class="n">tc</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">TransferClient</span><span class="p">(</span><span class="n">authorizer</span><span class="o">=</span><span class="n">authorizer</span><span class="p">)</span>
+
+<span class="c1"># high level interface; provides iterators for list responses</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;My Endpoints:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">tc</span><span class="o">.</span><span class="n">endpoint_search</span><span class="p">(</span><span class="n">filter_scope</span><span class="o">=</span><span class="s2">&quot;my-endpoints&quot;</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[{}] {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ep</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">ep</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal"><span class="pre">TRANSFER_TOKEN</span></code> is only valid for a limited time. You&#8217;ll have
+to login again when it expires.</p>
+</div>
+<div class="section" id="advanced-tutorial">
+<span id="id1"></span><h2>Advanced Tutorial<a class="headerlink" href="#advanced-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>In the first 4 steps of the Tutorial, we did a lot of hocus-pocus to procure
+Access Tokens, but we didn&#8217;t dive into how we are getting them (or why they
+exist at all).
+Not only will we talk through more detail on Access Tokens, but we&#8217;ll also
+explore more advanced use cases and their near-cousins, Refresh Tokens.</p>
+<div class="section" id="advanced-1-exploring-the-oauthtokenresponse">
+<h3>Advanced 1: Exploring the OAuthTokenResponse<a class="headerlink" href="#advanced-1-exploring-the-oauthtokenresponse" title="Permalink to this headline">¶</a></h3>
+<p>We powered through the OAuth2 flow in the basic tutorial.
+Though you can get a lot of detail out of the full
+<a class="reference internal" href="oauth/tutorial.html#oauth-tutorial"><span class="std std-ref">OAuth2 Tutorial</span></a>, the token response itself is of
+particular interest.
+This is the ultimate product of the flow, and it contains all of the
+credentials that we&#8217;ll want and need moving forward.</p>
+<p>Remember:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">NativeAppAuthClient</span><span class="p">(</span><span class="n">CLIENT_ID</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">oauth2_start_flow_native_app</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Please go to this URL and login: {0}&#39;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">oauth2_get_authorize_url</span><span class="p">()))</span>
+
+<span class="n">get_input</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">__builtins__</span><span class="p">,</span> <span class="s1">&#39;raw_input&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+<span class="n">auth_code</span> <span class="o">=</span> <span class="n">get_input</span><span class="p">(</span><span class="s1">&#39;Please enter the code here: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">token_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">oauth2_exchange_code_for_tokens</span><span class="p">(</span><span class="n">auth_code</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Though it has a few attributes and methods, by far the most important thing
+about <code class="docutils literal"><span class="pre">token_response</span></code> to understand is
+<code class="docutils literal"><span class="pre">token_response.by_resource_server</span></code>.</p>
+<p>Let&#8217;s take a look at <code class="docutils literal"><span class="pre">str(token_response.by_resource_server)</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">token_response</span><span class="o">.</span><span class="n">by_resource_server</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">  &quot;auth.globus.org&quot;: {</span>
+<span class="go">    &quot;access_token&quot;: &quot;AQBX8YvVAAAAAAADxhAtF46RxjcFuoxN1oSOmEk-hBqvOejY4imMbZlC0B8THfoFuOK9rshN6TV7I0uwf0hb&quot;,</span>
+<span class="go">    &quot;scope&quot;: &quot;openid email profile&quot;,</span>
+<span class="go">    &quot;token_type&quot;: &quot;Bearer&quot;,</span>
+<span class="go">    &quot;expires_at_seconds&quot;: 1476121216,</span>
+<span class="go">    &quot;refresh_token&quot;: None</span>
+<span class="go">  },</span>
+<span class="go">  &quot;transfer.api.globus.org&quot;: {</span>
+<span class="go">    &quot;access_token&quot;: &quot;AQBX8YvVAAAAAAADxg-u9uULMyTkLw4_15ReO_f2E056wLqjAWeLP51pgakLxYmyUDfGTd4SnYCiRjFq3mnj&quot;,</span>
+<span class="go">    &quot;scope&quot;: &quot;urn:globus:auth:scope:transfer.api.globus.org:all&quot;,</span>
+<span class="go">    &quot;token_type&quot;: &quot;Bearer&quot;,</span>
+<span class="go">    &quot;expires_at_seconds&quot;: 1476121286,</span>
+<span class="go">    &quot;refresh_token&quot;: None</span>
+<span class="go">  }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>A token response is structured with the following info:</p>
+<ul class="simple">
+<li>Resource Servers: The services (e.x. APIs) which require Tokens. These are
+the keys, <cite>&#8220;auth.globus.org&#8221;</cite> and <cite>&#8220;transfer.api.globus.org&#8221;</cite></li>
+<li>Access Tokens: Credentials you can use to talk to Resource Servers. We get
+back separate Access Tokens for each Resource Server. Importantly, this means
+that if Globus is issuing tokens to <cite>evil.api.example.com</cite>, you don&#8217;t need to
+worry that <cite>evil.api.example.com</cite> will ever see tokens valid for Globus
+Transfer</li>
+<li>Scope: A list of activities that the Access Token is good for against the
+Resource Server. They are defined and enforced by the Resource Server.</li>
+<li>token_type: With what kind of authorization should the Access Token be
+used? For the foreseeable future, all Globus tokens are sent as Bearer Auth
+headers.</li>
+<li>expires_at_seconds: A POSIX timestamp &#8211; the time at which the relevant
+Access Token expires and is no longer accepted by the service.</li>
+<li>Refresh Tokens: Credentials used to replace or &#8220;refresh&#8221; your access tokens
+when they expire. If requested, you&#8217;ll get one for each Resource Server.
+Details on their usage are in the next Advanced Tutorial</li>
+</ul>
+</div>
+<div class="section" id="advanced-2-refresh-tokens-never-login-again">
+<h3>Advanced 2: Refresh Tokens, Never Login Again<a class="headerlink" href="#advanced-2-refresh-tokens-never-login-again" title="Permalink to this headline">¶</a></h3>
+<p>Logging in to Globus through the web interface gets pretty old pretty fast.
+In fact, as soon as you write your first cron job against Globus, you&#8217;ll need
+something better.
+Enter Refresh Tokens: credentials which never expire unless revoked, and which
+can be used to get new Access Tokens whenever those do expire.</p>
+<p>Getting yourself refresh tokens to play with is actually pretty easy. Just
+tweak your login flow with one argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">NativeAppAuthClient</span><span class="p">(</span><span class="n">CLIENT_ID</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">oauth2_start_flow_native_app</span><span class="p">(</span><span class="n">refresh_tokens</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Please go to this URL and login: {0}&#39;</span>
+      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">oauth2_get_authorize_url</span><span class="p">()))</span>
+
+<span class="n">get_input</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">__builtins__</span><span class="p">,</span> <span class="s1">&#39;raw_input&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+<span class="n">auth_code</span> <span class="o">=</span> <span class="n">get_input</span><span class="p">(</span><span class="s1">&#39;Please enter the code here: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">token_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">oauth2_exchange_code_for_tokens</span><span class="p">(</span><span class="n">auth_code</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you peek at the <code class="docutils literal"><span class="pre">token_response</span></code> now, you&#8217;ll see that the
+<code class="docutils literal"><span class="pre">&quot;refresh_token&quot;</span></code> fields are no longer nulled.</p>
+<p>Now we&#8217;ve got a problem though: it&#8217;s great to say that you can refresh tokens
+whenever you want, but how do you know when to do that? And what if an Access
+Token gets revoked before it&#8217;s ready to expire?
+It turns out that using these correctly is pretty delicate, but there is a way
+forward that&#8217;s pretty much painless.</p>
+<p>Let&#8217;s assume you want to do this with the <code class="docutils literal"><span class="pre">globus_sdk.TransferClient</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s get stuff for the Globus Transfer service</span>
+<span class="n">globus_transfer_data</span> <span class="o">=</span> <span class="n">token_response</span><span class="o">.</span><span class="n">by_resource_server</span><span class="p">[</span><span class="s1">&#39;transfer.api.globus.org&#39;</span><span class="p">]</span>
+<span class="c1"># the refresh token and access token, often abbr. as RT and AT</span>
+<span class="n">transfer_rt</span> <span class="o">=</span> <span class="n">globus_transfer_data</span><span class="p">[</span><span class="s1">&#39;refresh_token&#39;</span><span class="p">]</span>
+<span class="n">transfer_at</span> <span class="o">=</span> <span class="n">globus_transfer_data</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span>
+<span class="n">expires_at_s</span> <span class="o">=</span> <span class="n">globus_transfer_data</span><span class="p">[</span><span class="s1">&#39;expires_at_seconds&#39;</span><span class="p">]</span>
+
+<span class="c1"># Now we&#39;ve got the data we need, but what do we do?</span>
+<span class="c1"># That &quot;GlobusAuthorizer&quot; from before is about to come to the rescue</span>
+
+<span class="n">authorizer</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">RefreshTokenAuthorizer</span><span class="p">(</span>
+    <span class="n">transfer_rt</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">transfer_at</span><span class="p">,</span> <span class="n">expires_at</span><span class="o">=</span><span class="n">expires_at_s</span><span class="p">)</span>
+
+<span class="c1"># and try using `tc` to make TransferClient calls. Everything should just</span>
+<span class="c1"># work -- for days and days, months and months, even years</span>
+<span class="n">tc</span> <span class="o">=</span> <span class="n">globus_sdk</span><span class="o">.</span><span class="n">TransferClient</span><span class="p">(</span><span class="n">authorizer</span><span class="o">=</span><span class="n">authorizer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A couple of things to note about this: <code class="docutils literal"><span class="pre">access_token</span></code> and <code class="docutils literal"><span class="pre">expires_at</span></code> are
+optional arguments to <code class="docutils literal"><span class="pre">RefreshTokenAuthorizer</span></code>. So, if all you&#8217;ve got on hand
+is a refresh token, it can handle the bootstrapping problem.
+Also, it&#8217;s good to know that the <code class="docutils literal"><span class="pre">RefreshTokenAuthorizer</span></code> will retry the
+first call that fails with an authorization error. If the second call also
+fails, it won&#8217;t try anymore.</p>
+<p>Finally, and perhaps most importantly, we must stress that you need to protect
+your Refresh Tokens. They are an infinite lifetime credential to act as you,
+so, like passwords, they should only be stored in secure locations.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">SDK Tutorial</a><ul>
+<li><a class="reference internal" href="#step-1-get-a-client">Step 1: Get a Client</a></li>
+<li><a class="reference internal" href="#step-2-get-and-save-client-id">Step 2: Get and Save Client ID</a></li>
+<li><a class="reference internal" href="#step-3-get-some-access-tokens">Step 3: Get Some Access Tokens!</a></li>
+<li><a class="reference internal" href="#step-4-use-your-tokens-talk-to-the-service">Step 4: Use Your Tokens, Talk to the Service</a></li>
+<li><a class="reference internal" href="#advanced-tutorial">Advanced Tutorial</a><ul>
+<li><a class="reference internal" href="#advanced-1-exploring-the-oauthtokenresponse">Advanced 1: Exploring the OAuthTokenResponse</a></li>
+<li><a class="reference internal" href="#advanced-2-refresh-tokens-never-login-again">Advanced 2: Refresh Tokens, Never Login Again</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="clients.html"
+                        title="next chapter">Service Clients</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tutorial.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="clients.html" title="Service Clients"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">globus-sdk-python 0.4.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Globus.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

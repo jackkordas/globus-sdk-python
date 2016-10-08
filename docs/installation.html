@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Getting Started &mdash; globus-sdk-python 0.4.2 documentation</title>
+    <title>Installation &mdash; globus-sdk-python 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="globus-sdk-python 0.4.2 documentation" href="index.html" />
-    <link rel="next" title="Service Clients" href="clients.html" />
+    <link rel="next" title="SDK Tutorial" href="tutorial.html" />
     <link rel="prev" title="Globus SDK for Python (Beta)" href="index.html" /> 
   </head>
   <body role="document">
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="clients.html" title="Service Clients"
+          <a href="tutorial.html" title="SDK Tutorial"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Globus SDK for Python (Beta)"
@@ -52,10 +52,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>The Globus SDK requires <a class="reference external" href="https://www.python.org/">Python</a> 2.7+ or 3.3+.
 If a supported version of Python is not already installed on your system, see
 this <a class="reference external" href="http://docs.python-guide.org/en/latest/starting/installation/">Python installation guide </a>.</p>
@@ -74,32 +72,6 @@ git repository and installing it manually:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="basic-usage">
-<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Most APIs require authentication using an access token, so the first
-step to using the SDK is to acquire a token. For development, the
-simplest way to get a token is to use the <a class="reference external" href="https://tokens.globus.org">Globus Tokens</a> webapp. Globus Tokens provides you with
-tokens for all Globus APIs which are valid for two days, and are tied to
-a consent for <code class="docutils literal"><span class="pre">Globus</span> <span class="pre">Tokens</span></code>. The appropriate method for obtaining
-tokens for a production application depends on the type of application,
-and is outside the scope of the SDK documentation (see the REST
-documentation at <a class="reference external" href="https://docs.globus.org">https://docs.globus.org</a>).</p>
-<p>The webapp will provide you with instructions to save your tokens to the Globus
-SDK config file, at <code class="docutils literal"><span class="pre">~/.globus.cfg</span></code>.</p>
-<p>To use the Transfer API:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span> <span class="c1"># for python 2</span>
-<span class="kn">from</span> <span class="nn">globus_sdk</span> <span class="kn">import</span> <span class="n">TransferClient</span>
-
-<span class="n">tc</span> <span class="o">=</span> <span class="n">TransferClient</span><span class="p">()</span> <span class="c1"># uses transfer_token from the config file</span>
-
-<span class="c1"># high level interface; provides iterators for list responses</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;My Endpoints:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">tc</span><span class="o">.</span><span class="n">endpoint_search</span><span class="p">(</span><span class="n">filter_scope</span><span class="o">=</span><span class="s2">&quot;my-endpoints&quot;</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ep</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">],</span> <span class="n">ep</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-</div>
 
 
           </div>
@@ -107,25 +79,16 @@ SDK config file, at <code class="docutils literal"><span class="pre">~/.globus.c
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Getting Started</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Globus SDK for Python (Beta)</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="clients.html"
-                        title="next chapter">Service Clients</a></p>
+  <p class="topless"><a href="tutorial.html"
+                        title="next chapter">SDK Tutorial</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/getting_started.txt"
+      <li><a href="_sources/installation.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -153,7 +116,7 @@ SDK config file, at <code class="docutils literal"><span class="pre">~/.globus.c
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="clients.html" title="Service Clients"
+          <a href="tutorial.html" title="SDK Tutorial"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Globus SDK for Python (Beta)"
